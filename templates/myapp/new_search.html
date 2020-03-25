@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class = "container">
+    <div class="row">
+        <div ><h2 class="center">{{ search.country | title }}</h2></div>
+
+    </div>
+
+<div class="row">
+
+    <div class="col s4">
+
+      <div class="center">
+          <i class="large material-icons" style="color: Blue">group</i>
+          <p> Total Cases</p>
+          <h4>{{ search.total_cases }}</h4>
+          <p></p>
+    </div>
+
+    </div>
+    <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: black">location_disabled</i>
+          <p> Total Deaths</p>
+           <h4>{{ search.total_deaths }}</h4>
+    </div>
+    </div>
+    <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: orange">face</i>
+          <p> Total Recovered</p>
+         <h4>{{ search.total_recovered }}</h4>
+    </div>
+    </div>
+
+</div>
+<div class="row">
+    <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: red">flash_on</i>
+          <p> Active Cases</p>
+      <h4>{{ search.active_cases }}</h4>
+    </div>
+    </div>
+    <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: blue">local_library</i>
+          <p> New Cases</p>
+           <h4>{{ search.new_cases }}</h4>
+    </div>
+    </div>
+    <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: black">hotel</i>
+          <p> New Deaths</p>
+        <h4>{{ search.new_deaths }}</h4>
+    </div>
+    </div>
+
+</div>
+
+
+  </div>
+
+{% endblock content %}
