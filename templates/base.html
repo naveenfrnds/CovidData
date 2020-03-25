@@ -6,7 +6,7 @@
       <!--Import materialize.css-->
           <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
-
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
 <style>
 .w3-tangerine {
   font-family: 'Tangerine', serif;
@@ -55,7 +55,7 @@
 
 
 {% csrf_token %}
-     <input type="text" name="search" placeholder="SEARCH BY COUNTRY">
+     <input type="text" name="search" id="search" placeholder="SEARCH BY COUNTRY">
     <button class="btn waves-effect waves-light" type="submit" name="action">Submit
     <i class="material-icons right">flash_on</i>
     </button>
@@ -68,7 +68,22 @@
 
 {% endblock content %}
 
-'<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"> </script>
+ <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+<script>
+        $(document).ready(function(){
+            $("#search").autocomplete({
+                source: "/ajax_calls/search/",
+                minLength: 2,
+                open: function(){
+                    setTimeout(function () {
+                        $('.ui-autocomplete').css('z-index', 99);
+                    }, 0);
+                }
+              });
+        });
+</script>
 
 </body>
 </html>

@@ -1,9 +1,11 @@
 import requests
+from django.http import HttpResponse
 from django.shortcuts import render
 from bs4 import BeautifulSoup
 from .models import CovidData
 import datetime
 import pytz
+import json
 import urllib.request
 import pandas as pd
 
@@ -12,6 +14,24 @@ import pandas as pd
 
 def home(request):
     return render(request, 'base.html')
+
+
+def autocompleteModel(request):
+
+    if request.is_ajax():
+        q = request.GET.get('term', '').lower()
+        print(q)
+        search_qs = CovidData.objects.filter(country__icontains=q, ).distinct()
+        results = []
+
+        for r in search_qs:
+            results.append(r.country.capitalize())
+        data = json.dumps(results)
+        print(data)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
 def new_search(request):
