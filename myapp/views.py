@@ -14,7 +14,6 @@ def home(request):
     return render(request, 'base.html')
 
 
-'''
 def new_search(request):
     search = request.POST.get('search')
     objverify = CovidData.objects.order_by('-created')[1]
@@ -23,7 +22,7 @@ def new_search(request):
     old_time = objverify.created
     new_time = datetime.datetime.now()
     new_time = pytz.utc.localize(new_time)
-    val_time = new_time - datetime.timedelta(hours=2, minutes=15)
+    val_time = new_time - datetime.timedelta(hours=1, minutes=15)
     if old_time < val_time:
         print(1)
         searchdata = requests.get('https://www.worldometers.info/coronavirus/#countries')
@@ -60,6 +59,8 @@ def new_search(request):
             error_message = " Couldn't Retrevie Your Details "
 
     return render(request, 'myapp/new_search.html', {'search': get_data, 'errormessage': error_message, })
+
+
 '''
 
 
@@ -87,3 +88,4 @@ def new_search(request):
     get_data = CovidData.objects.filter(country=search.lower()).order_by('-pk')[1]
 
     return render(request, 'myapp/new_search.html', {'search': get_data})
+'''
