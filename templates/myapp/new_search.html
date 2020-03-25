@@ -2,6 +2,16 @@
 
 {% block content %}
 
+{% if errormessage %}<div class = "container">
+     <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: red">bug_report</i>
+
+      <h4>No Valid Data Found !! Check your Search</h4>
+    </div>
+    </div>
+
+{% else %}
 <div class = "container">
     <div class="row">
         <div ><h2 class="center">{{ search.country | title }}</h2></div>
@@ -55,7 +65,7 @@
       <div class="center">
           <i class="large material-icons" style="color: black">hotel</i>
           <p> New Deaths</p>
-        <h4>{{ search.new_deaths }}</h4>
+        <h4>{% if search.new_deaths  %} {{ search.new_deaths }} {% else %} 0 {% endif %} </h4>
     </div>
     </div>
 
@@ -63,5 +73,9 @@
 
 
   </div>
+
+{% endif %}
+
+
 
 {% endblock content %}

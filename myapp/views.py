@@ -17,7 +17,8 @@ def home(request):
 def new_search(request):
     search = request.POST.get('search')
     objverify = CovidData.objects.order_by('-created')[1]
-
+    error_message = ""
+    get_data = ""
     old_time = objverify.created
     new_time = datetime.datetime.now()
     new_time = pytz.utc.localize(new_time)
