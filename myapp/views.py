@@ -17,7 +17,6 @@ def home(request):
 
 
 def autocompleteModel(request):
-
     if request.is_ajax():
         q = request.GET.get('term', '').lower()
         print(q)
@@ -81,10 +80,7 @@ def new_search(request):
     return render(request, 'myapp/new_search.html', {'search': get_data, 'errormessage': error_message, })
 
 
-'''
-
-
-def new_search(request):
+def new_searchoverload(request):
     search = request.POST.get('search')
     searchdata = requests.get('https://www.worldometers.info/coronavirus/#countries')
     searchdata_soup = BeautifulSoup(searchdata.text, "html.parser")
@@ -105,7 +101,6 @@ def new_search(request):
         except Exception as ee:
 
             print(ee)
-    get_data = CovidData.objects.filter(country=search.lower()).order_by('-pk')[1]
 
-    return render(request, 'myapp/new_search.html', {'search': get_data})
-'''
+
+    return HttpResponse("You're looking at answer ")
