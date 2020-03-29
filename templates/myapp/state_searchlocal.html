@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+      <!--Import Google Icon Font-->
+      <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+      <!--Import materialize.css-->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Tangerine">
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css" media="all" />
+<style>
+.w3-tangerine {
+  font-family: 'Tangerine', serif;
+}
+</style>
+
+      <!--Let browser know website is optimized for mobile-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+<p>
+ <nav>
+    <div class="container nav-wrapper">
+      <a href="#" class="brand-logo">PIXELGAIN</a>
+      <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a href="/">Home</a></li>
+
+      </ul>
+    </div>
+  </nav>
+ <p></p>
+ <div class="container">
+     <P></P>
+</div>
+
+
+
+ {% if errormessage %}<div class = "container">
+     <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: red">bug_report</i>
+
+      <h4>No Valid Data Found !! Check your Search</h4>
+    </div>
+    </div>
+
+{% else %}
+
+
+
+
+
+
+
+      <div class="container">
+     <div class="row">
+         <div >
+          <div class="col s4" align="right">
+
+
+    <i class="medium material-icons">insert_chart</i>
+          </div>
+              <div class="col s8">
+
+              <h5>INDIA COVID-19 STATE WISE TRACKER</h5>
+          </div>
+             </div>
+     </div>
+ </div>
+<div class = "container">
+
+    <div class="card blue-grey light">
+        <div class="card-content white-text">
+    <div class="row">
+
+
+        <div class="col s3">
+      <div align="center">
+          <i class="medium material-icons" style="color: Blue">group</i>
+          <p>Total Confirmed</p>
+          <h6>{{ headerdata.total_cases }}</h6>
+          <p></p>
+    </div>
+             </div>
+        <div class="col s3">
+      <div align="center">
+          <i class="medium material-icons" style="color: Orange">flash_on</i>
+          <p> Total Active</p>
+          <h6>{{ headerdata.total_active }}</h6>
+          <p></p>
+    </div>
+                  </div>
+
+        <div class="col s3">
+       <div align="center">
+          <i class="medium material-icons" style="color: Orange">face</i>
+          <p> Total Recovered</p>
+           <h6>{{ headerdata.total_recovered }}</h6>
+          <p></p>
+    </div>
+             </div>
+        <div class="col s3">
+       <div align="center">
+          <i class="medium material-icons" style="color: black">location_disabled</i>
+          <p> Total Deaths</p>
+           <h6>{{ headerdata.total_deaths }}</h6>
+          <p></p>
+    </div>
+                  </div>
+
+
+    </div>
+    </div>
+    </div>
+
+<div class="row">
+
+
+    <div class="col s12">
+      <table class="striped">
+   <tr>
+       <th>STATE</th>
+       <th>CONFIRMED CASES</th>
+       <th>ACTIVE CASES</th>
+       <th>RECOVERED CASES</th>
+       <th>TOTAL DEATHS</th>
+   </tr>
+   {% for q in search %}
+       <tr>
+           <td>{{q.state}}</td>
+           <td>{{q.total_cases}}</td>
+           <td>{{q.total_active}}</td>
+           <td>{{q.total_recovered}}</td>
+           <td>{{q.total_deaths}}</td>
+       </tr>
+   {% endfor %}
+</table>
+
+    </div>
+
+
+</div>
+
+</div>
+
+{% endif %}
+
+
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
+</body>
+</html>
+

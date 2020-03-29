@@ -72,7 +72,7 @@ def new_search(request):
                 except Exception as ee:
                     error_message = " Couldn't Retrevie Your Details "
 
-
+        get_data = CovidData.objects.filter(country=search.lower()).order_by('-pk')[1]
 
     else:
         print(2)
@@ -110,6 +110,7 @@ def new_searchoverload(request):
     return HttpResponse("You're looking at answer ")
 
 
+'''
 def state_search(request):
     # search = request.POST.get('search')
 
@@ -119,8 +120,6 @@ def state_search(request):
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1024x1400")
-
-
 
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=os.environ.get('CHROMEDRIVER_PATH'))
 
@@ -161,3 +160,202 @@ def state_search(request):
             print(ee)
 
     return render(request, 'myapp/state_wise.html', {'search': driver.page_source, })
+'''
+
+
+def state_search(request):
+    objverify = CovidStateData.objects.order_by('-created')[1]
+    error_message = ""
+    get_data = ""
+    old_time = objverify.created
+    new_time = datetime.datetime.now()
+    new_time = pytz.utc.localize(new_time)
+    val_time = new_time - datetime.timedelta(hours=1, minutes=15)
+    if old_time < val_time:
+
+        # search = request.POST.get('search')
+
+        chrome_options = Options()
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--window-size=1024x1400")
+
+        driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=os.environ.get('CHROMEDRIVER_PATH'))
+
+        driver.get("https://www.covid19india.org/")
+        # assert "GitHub".lower() in driver.title.lower()
+
+        # scrap info
+        searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
+
+        CovidStateData.objects.all().delete()
+        state = CovidData.objects.filter(country='india').order_by('-pk')[1]
+        for td in searchdata_soup.find_all('tbody'):
+
+            tds = td.find('tr')
+            tdm = tds.find_all('td')
+            try:
+
+                t2 = tdm[2].text
+                t3 = tdm[3].text
+                t4 = tdm[4].text
+
+                if tdm[4].text == "-":
+                    t4 = '0'
+                if tdm[3].text == "-":
+                    t3 = '0'
+
+                t1 = int(t2) + int(t3) + int(t4)
+
+                # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+
+                state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
+                                                total_deaths=t4, total_active=t2)
+
+                state.save()
+
+            except Exception as ee:
+
+                print(ee)
+        get_data = CovidStateData.objects.all()
+        get_total = CovidStateData.objects.get(state='Total')
+    else:
+        print(2)
+
+        try:
+            get_data = CovidStateData.objects.all()
+            get_total = CovidStateData.objects.get(state='Total')
+        except Exception as ee:
+            error_message = " Couldn't Retrevie Your Details "
+
+    return render(request, 'myapp/state_searchlocal.html', {'search': get_data, 'errormessage': error_message,
+                                                            'headerdata': get_total})
+
+
+def state_searchlocal(request):
+    objverify = CovidStateData.objects.order_by('-created')[1]
+    error_message = ""
+    get_data = ""
+    old_time = objverify.created
+    new_time = datetime.datetime.now()
+    new_time = pytz.utc.localize(new_time)
+    val_time = new_time - datetime.timedelta(hours=1, minutes=15)
+    if old_time < val_time:
+
+        # search = request.POST.get('search')
+
+        chrome_options = Options()
+        # chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--window-size=1024x1400")
+
+        driver = webdriver.Chrome(chrome_options=chrome_options,
+                                  executable_path="/Users/naveen/Desktop/codedd/myapplist/static/myapp/chromedriver")
+
+        driver.get("https://www.covid19india.org/")
+        # assert "GitHub".lower() in driver.title.lower()
+
+        # scrap info
+        searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
+        searchlist = []
+
+        CovidStateData.objects.all().delete()
+        state = CovidData.objects.filter(country='india').order_by('-pk')[1]
+        for td in searchdata_soup.find_all('tbody'):
+
+            tds = td.find('tr')
+            tdm = tds.find_all('td')
+            try:
+
+                t2 = tdm[2].text
+                t3 = tdm[3].text
+                t4 = tdm[4].text
+
+                if tdm[4].text == "-":
+                    t4 = '0'
+                if tdm[3].text == "-":
+                    t3 = '0'
+
+                t1 = int(t2) + int(t3) + int(t4)
+
+                # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+
+                state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
+                                                total_deaths=t4, total_active=t2)
+
+                state.save()
+
+            except Exception as ee:
+
+                print(ee)
+        get_data = CovidStateData.objects.all()
+        get_total = CovidStateData.objects.get(state='Total')
+    else:
+        print(2)
+
+        try:
+            get_data = CovidStateData.objects.all()
+            get_total = CovidStateData.objects.get(state='Total')
+        except Exception as ee:
+            error_message = " Couldn't Retrevie Your Details "
+
+    return render(request, 'myapp/state_searchlocal.html', {'search': get_data, 'errormessage': error_message,
+                                                            'headerdata': get_total})
+
+
+def state_searchlocaloverload(request):
+    # search = request.POST.get('search')
+
+    chrome_options = Options()
+    # chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--window-size=1024x1400")
+
+    driver = webdriver.Chrome(chrome_options=chrome_options,
+                              executable_path="/Users/naveen/Desktop/codedd/myapplist/static/myapp/chromedriver")
+
+    driver.get("https://www.covid19india.org/")
+    # assert "GitHub".lower() in driver.title.lower()
+
+    # scrap info
+    searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
+    searchlist = []
+
+    CovidStateData.objects.all().delete()
+    state = CovidData.objects.filter(country='india').order_by('-pk')[1]
+    for td in searchdata_soup.find_all('tbody'):
+
+        tds = td.find('tr')
+        tdm = tds.find_all('td')
+        try:
+
+            t2 = tdm[2].text
+            t3 = tdm[3].text
+            t4 = tdm[4].text
+
+            if tdm[4].text == "-":
+                t4 = '0'
+            if tdm[3].text == "-":
+                t3 = '0'
+
+            t1 = int(t2) + int(t3) + int(t4)
+
+            # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+
+            state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
+                                            total_deaths=t4, total_active=t2)
+
+            state.save()
+
+        except Exception as ee:
+
+            print(ee)
+    get_data = CovidStateData.objects.all()
+
+    return HttpResponse("Thanks")
