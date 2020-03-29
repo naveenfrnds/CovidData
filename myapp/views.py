@@ -30,7 +30,7 @@ def autocompleteModel(request):
         results = []
         print(search_qs)
         for r in search_qs:
-            results.append(r)
+            results.append(r.capitalize())
         data = json.dumps(results)
         # print(data)
     else:
