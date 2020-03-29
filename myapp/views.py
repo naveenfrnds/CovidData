@@ -118,7 +118,7 @@ def state_search(request):
     chrome_options.add_argument("--window-size=1024x1400")
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 
-    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path='CHROMEDRIVER_PATH')
+    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=os.environ.get('CHROMEDRIVER_PATH'))
 
     driver.get("https://www.covid19india.org/")
     # assert "GitHub".lower() in driver.title.lower()
