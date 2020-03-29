@@ -26,13 +26,13 @@ def autocompleteModel(request):
         print(q)
         search_qs = CovidData.objects.filter(country__icontains=q).exclude(country=None).values_list('country',
                                                                                                      flat=True).distinct()
-
+        # search_qs = CovidData.objects.filter(country__icontains=q)
         results = []
-
+        print(search_qs)
         for r in search_qs:
-            results.append(r.country.capitalize())
+            results.append(r)
         data = json.dumps(results)
-        print(data)
+        # print(data)
     else:
         data = 'fail'
     mimetype = 'application/json'
