@@ -51,7 +51,7 @@ def new_search(request):
         searchdata = requests.get('https://www.worldometers.info/coronavirus/#countries')
         searchdata_soup = BeautifulSoup(searchdata.text, "html.parser")
         searchlist = []
-        CovidStateData.objects.all().delete()
+        CovidData.objects.all().delete()
 
         for td in searchdata_soup.find_all('tr'):
 
