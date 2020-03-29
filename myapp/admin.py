@@ -4,3 +4,4 @@ from . import models
 
 admin.site.register(models.Search)
 admin.site.register(models.CovidData)
+admin.site.register(models.CovidStateData)

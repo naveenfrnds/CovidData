@@ -24,4 +24,17 @@ class CovidData(models.Model):
     created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}  -  {}'.format(self.country, self.active_cases)
+        return '{}  -  {}'.format(self.country, self.total_cases)
+
+
+class CovidStateData(models.Model):
+    coviddata = models.ForeignKey(CovidData, on_delete=models.CASCADE)
+    state = models.CharField(max_length=500)
+    total_cases = models.CharField(max_length=500)
+    total_recovered = models.CharField(max_length=500)
+    total_deaths = models.CharField(max_length=500)
+    total_active = models.CharField(max_length=500)
+    created = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return '{}  -  {}'.format(self.state, self.total_cases)

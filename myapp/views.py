@@ -2,10 +2,14 @@ import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from bs4 import BeautifulSoup
-from .models import CovidData
+from .models import CovidData, CovidStateData
 import datetime
 import pytz
 import json
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+import os
+
 import urllib.request
 import pandas as pd
 
@@ -47,7 +51,8 @@ def new_search(request):
         searchdata = requests.get('https://www.worldometers.info/coronavirus/#countries')
         searchdata_soup = BeautifulSoup(searchdata.text, "html.parser")
         searchlist = []
-        CovidData.objects.all().delete()
+        CovidStateData.objects.all().delete()
+
         for td in searchdata_soup.find_all('tr'):
 
             tds = td.find_all('td')
@@ -102,5 +107,53 @@ def new_searchoverload(request):
 
             print(ee)
 
-
     return HttpResponse("You're looking at answer ")
+
+
+def state_search(request):
+    # search = request.POST.get('search')
+
+    chrome_options = Options()
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--window-size=1024x1400")
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+
+    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path='CHROMEDRIVER_PATH')
+
+    driver.get("https://www.covid19india.org/")
+    # assert "GitHub".lower() in driver.title.lower()
+
+    # scrap info
+    searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
+    searchlist = []
+
+    CovidStateData.objects.all().delete()
+    for td in searchdata_soup.find_all('tbody'):
+
+        tds = td.find('tr')
+        tdm = tds.find_all('td')
+        try:
+
+            t2 = tdm[2].text
+            t3 = tdm[3].text
+            t4 = tdm[4].text
+
+            if tdm[4].text == "-":
+                t4 = '0'
+            if tdm[3].text == "-":
+                t3 = '0'
+
+            t1 = int(t2) + int(t3) + int(t4)
+
+            print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+            # covid_obj1 = CovidData(country=tds[0].text.lower(), total_cases=tds[1].text, new_cases=tds[2].text,
+            #            total_deaths=tds[3].text, new_deaths=tds[4].text, total_recovered=tds[5].text,
+            ##          tot_cases=tds[8].text, tot_deaths=tds[9].text)
+
+            # covid_obj1.save()
+
+        except Exception as ee:
+
+            print(ee)
+
+    return render(request, 'myapp/state_wise.html', {'search': driver.page_source, })
