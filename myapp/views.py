@@ -24,7 +24,7 @@ def autocompleteModel(request):
     if request.is_ajax():
         q = request.GET.get('term', '').lower()
         print(q)
-        search_qs = CovidData.objects.filter(country__icontains=q, ).distinct()
+        search_qs = CovidData.objects.filter(country__icontains=q, )
         results = []
 
         for r in search_qs:
@@ -116,7 +116,10 @@ def state_search(request):
     chrome_options = Options()
     chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
     chrome_options.add_argument("--headless")
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1024x1400")
+
 
 
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=os.environ.get('CHROMEDRIVER_PATH'))
