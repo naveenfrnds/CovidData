@@ -11,21 +11,49 @@
 .w3-tangerine {
   font-family: 'Tangerine', serif;
 }
-</style>
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+  }
+
+  main {
+    flex: 1 0 auto;
+  }
+  </style>
+<meta name="description" content="Get Corona virus Latest tracker based on country and get  corona virus india status tracker by state">
+  <meta name="keywords" content="Corona virus tracker , corona virus india tracker, corona virus, corona virus india update,
+  coronavirus, coronavirus italy,coronavirus US,coronavirus india,corona virus, corona virus italy,corona virus US,corona virus india">
+  <meta name="author" content="Naveen Nani">
 
       <!--Let browser know website is optimized for mobile-->
       <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </head>
-<p>
- <nav>
-    <div class="container nav-wrapper">
+
+     <div class="navbar-fixed">
+  <nav class="nav-extended">
+    <div class="nav-wrapper">
       <a href="#" class="brand-logo">PIXELGAIN</a>
+      <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
       <ul id="nav-mobile" class="right hide-on-med-and-down">
         <li><a href="/">Home</a></li>
-
+          <li><a href="/state_wise">India Tracker</a></li>
+      </ul>
+    </div>
+    <div class="nav-content">
+      <ul class="tabs tabs-transparent">
+        <li><a href="/">Home</a></li>
+          <li><a href="/state_wise">India Tracker</a></li>
       </ul>
     </div>
   </nav>
+
+  <ul class="sidenav" id="mobile-demo">
+     <li><a href="/">Home</a></li>
+          <li><a href="/state_wise">India Tracker</a></li>
+  </ul>
+ </div>
+ <p></p>
  <p></p>
  <div class="container">
      <P></P>
@@ -53,12 +81,12 @@
       <div class="container">
      <div class="row">
          <div >
-          <div class="col s4" align="right">
+          <div class="col s2" align="right">
 
 
     <i class="medium material-icons">insert_chart</i>
           </div>
-              <div class="col s8">
+              <div class="col s10">
 
               <h5>INDIA COVID-19 STATE WISE TRACKER</h5>
           </div>
@@ -116,7 +144,7 @@
 
     <div class="col s12">
       <table class="striped">
-   <tr>
+   <tr style= "font-size: 12px;">
        <th>STATE</th>
        <th>CONFIRMED CASES</th>
        <th>ACTIVE CASES</th>
@@ -124,12 +152,12 @@
        <th>TOTAL DEATHS</th>
    </tr>
    {% for q in search %}
-       <tr>
-           <td>{{q.state}}</td>
-           <td>{{q.total_cases}}</td>
-           <td>{{q.total_active}}</td>
-           <td>{{q.total_recovered}}</td>
-           <td>{{q.total_deaths}}</td>
+       <tr style= "font-size: 12px;">
+           <td >{{q.state}}</td>
+           <td style=" text-align: center;">{{q.total_cases}}</td>
+            <td style=" text-align: center;">{{q.total_active}}</td>
+            <td style=" text-align: center;">{{q.total_recovered}}</td>
+            <td style=" text-align: center;">{{q.total_deaths}}</td>
        </tr>
    {% endfor %}
 </table>
@@ -146,6 +174,17 @@
 
 
 </div>
+ <p></p>
+
+  <footer class="page-footer">
+
+          <div class="footer-copyright">
+            <div class="container">
+            © 2020 Copyright @ PIXELGAIN.com
+
+            </div>
+          </div>
+        </footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
