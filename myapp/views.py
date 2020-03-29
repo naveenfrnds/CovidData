@@ -244,10 +244,11 @@ def state_search(request):
 
 
 def state_searchlocal(request):
+    error_message = ""
     if CovidStateData.objects.count() > 0:
 
         objverify = CovidStateData.objects.order_by('-created')[1]
-        error_message = ""
+
         get_data = ""
         old_time = objverify.created
         new_time = datetime.datetime.now()
