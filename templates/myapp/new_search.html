@@ -12,7 +12,7 @@
     </div>
 
 {% else %}
-<div class = "container">
+<div class = "container" id="focuss">
     <div class="row">
         <div ><h2 class="center">{{ search.country | title }}</h2></div>
 
@@ -58,7 +58,8 @@
       <div class="center">
           <i class="large material-icons" style="color: blue">local_library</i>
           <p> New Cases</p>
-           <h4>{{ search.new_cases }}</h4>
+           <h4>{% if search.new_cases  %} {{ search.new_cases }} {% else %} 0 {% endif %}</h4>
+
     </div>
     </div>
     <div class="col s4">
@@ -71,7 +72,7 @@
 
 </div>
 
-
+</div>
   </div>
 
 {% endif %}
