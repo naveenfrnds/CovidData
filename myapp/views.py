@@ -167,78 +167,85 @@ def state_search(request):
 
 def state_search(request):
     error_message = ""
-    if CovidStateData.objects.count() > 0:
+    get_data = ""
+    get_total = ""
+    try:
 
-        objverify = CovidStateData.objects.order_by('-created')[1]
+        if CovidStateData.objects.count() > 0:
 
-        get_data = ""
-        old_time = objverify.created
-        new_time = datetime.datetime.now()
-        new_time = pytz.utc.localize(new_time)
-        val_time = new_time - datetime.timedelta(hours=1, minutes=15)
-        if old_time < val_time:
+            objverify = CovidStateData.objects.order_by('-created')[1]
 
-            # search = request.POST.get('search')
+            get_data = ""
+            old_time = objverify.created
+            new_time = datetime.datetime.now()
+            new_time = pytz.utc.localize(new_time)
+            val_time = new_time - datetime.timedelta(hours=1, minutes=15)
+            if old_time < val_time:
 
-            chrome_options = Options()
-            chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument('--no-sandbox')
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--window-size=1024x1400")
+                # search = request.POST.get('search')
 
-            driver = webdriver.Chrome(chrome_options=chrome_options,
-                                      executable_path=os.environ.get('CHROMEDRIVER_PATH'))
+                chrome_options = Options()
+                chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+                chrome_options.add_argument("--headless")
+                chrome_options.add_argument('--no-sandbox')
+                chrome_options.add_argument("--disable-dev-shm-usage")
+                chrome_options.add_argument("--window-size=1024x1400")
 
-            driver.get("https://www.covid19india.org/")
-            # assert "GitHub".lower() in driver.title.lower()
+                driver = webdriver.Chrome(chrome_options=chrome_options,
+                                          executable_path=os.environ.get('CHROMEDRIVER_PATH'))
 
-            # scrap info
-            searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
+                driver.get("https://www.covid19india.org/")
+                # assert "GitHub".lower() in driver.title.lower()
 
-            CovidStateData.objects.all().delete()
-            state = CovidData.objects.filter(country='india').order_by('-pk')[1]
-            for td in searchdata_soup.find_all('tbody'):
+                # scrap info
+                searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
 
-                tds = td.find('tr')
-                tdm = tds.find_all('td')
-                try:
+                CovidStateData.objects.all().delete()
+                state = CovidData.objects.filter(country='india').order_by('-pk')[1]
+                for td in searchdata_soup.find_all('tbody'):
 
-                    t2 = tdm[2].text
-                    t3 = tdm[3].text
-                    t4 = tdm[4].text
+                    tds = td.find('tr')
+                    tdm = tds.find_all('td')
+                    try:
 
-                    if tdm[4].text == "-":
-                        t4 = '0'
-                    if tdm[3].text == "-":
-                        t3 = '0'
+                        t2 = tdm[2].text
+                        t3 = tdm[3].text
+                        t4 = tdm[4].text
 
-                    t1 = int(t2) + int(t3) + int(t4)
+                        if tdm[4].text == "-":
+                            t4 = '0'
+                        if tdm[3].text == "-":
+                            t3 = '0'
 
-                    # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+                        t1 = int(t2) + int(t3) + int(t4)
 
-                    state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
-                                                    total_deaths=t4, total_active=t2)
+                        # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
 
-                    state.save()
+                        state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
+                                                        total_deaths=t4, total_active=t2)
 
-                except Exception as ee:
+                        state.save()
 
-                    print(ee)
-            get_data = CovidStateData.objects.all()
-            get_total = CovidStateData.objects.get(state='Total')
-        else:
-            print(2)
+                    except Exception as ee:
 
-            try:
+                        print(ee)
                 get_data = CovidStateData.objects.all()
                 get_total = CovidStateData.objects.get(state='Total')
-            except Exception as ee:
-                error_message = " Couldn't Retrevie Your Details "
-    else:
-        loadstatedata()
-        get_data = CovidStateData.objects.all()
-        get_total = CovidStateData.objects.get(state='Total')
+            else:
+                print(2)
+
+                try:
+                    get_data = CovidStateData.objects.all()
+                    get_total = CovidStateData.objects.get(state='Total')
+                except Exception as ee:
+                    error_message = " Couldn't Retrevie Your Details "
+        else:
+            loadstatedata()
+            get_data = CovidStateData.objects.all()
+            get_total = CovidStateData.objects.get(state='Total')
+    except Exception as ee:
+
+        error_message = "Issue"
 
     return render(request, 'myapp/state_searchlocal.html', {'search': get_data, 'errormessage': error_message,
                                                             'headerdata': get_total})
