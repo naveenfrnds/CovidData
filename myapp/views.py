@@ -2,7 +2,7 @@ import requests
 from django.http import HttpResponse
 from django.shortcuts import render
 from bs4 import BeautifulSoup
-from .models import CovidData, CovidStateData
+from .models import CovidData, CovidStateData, CovidDisData
 import datetime
 import pytz
 import json
@@ -36,6 +36,27 @@ def autocompleteModel(request):
     else:
         data = 'fail'
     mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def getstatedata(request):
+    if request.is_ajax():
+        print(request.GET.get('field1', ''))
+        data = request.GET.get('field1', '')
+        # search_qs = CovidData.objects.filter(country__icontains=q).exclude(country=None).values_list('country',
+        #  flat=True).distinct()
+
+        state = CovidStateData.objects.get(state=data)
+        dist = state.coviddisdata_set.all()
+        # district.coviddisdata_set.create(district=tdk[0].text, total_cases=tdk[1].text)
+        # search_qs = CovidData.objects.filter(country__icontains=q)
+        results = []
+
+        for r in dist:
+            results.append(r.district + "-" + r.total_cases)
+        data = json.dumps(results)
+
+        mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
 
@@ -201,11 +222,12 @@ def state_search(request):
                 searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
 
                 CovidStateData.objects.all().delete()
+                CovidDisData.objects.all().delete()
                 state = CovidData.objects.filter(country='india').order_by('-pk')[1]
-                for td in searchdata_soup.find_all('tbody'):
+                for td in searchdata_soup.find_all('tr', {'class': 'state'}):
 
-                    tds = td.find('tr')
-                    tdm = tds.find_all('td')
+                    #tds = td.find('tr')
+                    tdm = td.find_all('td')
                     try:
 
                         t2 = tdm[2].text
@@ -267,7 +289,7 @@ def state_searchlocal(request):
             # search = request.POST.get('search')
 
             chrome_options = Options()
-            # chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+            chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
             chrome_options.add_argument("--headless")
             chrome_options.add_argument('--no-sandbox')
             chrome_options.add_argument("--disable-dev-shm-usage")
@@ -287,24 +309,24 @@ def state_searchlocal(request):
             state = CovidData.objects.filter(country='india').order_by('-pk')[1]
             for td in searchdata_soup.find_all('tbody'):
 
-                tds = td.find('tr')
-                tdm = tds.find_all('td')
+                # tds = td.find('tr')
+                # tdm = tds.find_all('td')
                 try:
 
-                    t2 = tdm[2].text
-                    t3 = tdm[3].text
-                    t4 = tdm[4].text
+                    t2 = td[2].text
+                    t3 = td[3].text
+                    t4 = td[4].text
 
-                    if tdm[4].text == "-":
+                    if td[4].text == "-":
                         t4 = '0'
-                    if tdm[3].text == "-":
+                    if td[3].text == "-":
                         t3 = '0'
 
                     t1 = int(t2) + int(t3) + int(t4)
 
-                    # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+                    print(td[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
 
-                    state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
+                    state.covidstatedata_set.create(state=td[0].text, total_cases=str(t1), total_recovered=t3,
                                                     total_deaths=t4, total_active=t2)
 
                     state.save()
@@ -394,6 +416,8 @@ def loadstatedata():
     chrome_options.add_argument('--no-sandbox')
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--window-size=1024x1400")
+    #driver = webdriver.Chrome(chrome_options=chrome_options,
+                              #executable_path="/Users/naveen/Desktop/codedd/myapplist/static/myapp/chromedriver")
 
     driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=os.environ.get('CHROMEDRIVER_PATH'))
 
@@ -404,6 +428,63 @@ def loadstatedata():
     searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
 
     CovidStateData.objects.all().delete()
+    state = CovidData.objects.filter(country='india').order_by('-pk')[1]
+    print('check1')
+    # for td in searchdata_soup.find_all('tr', {'class': 'state'}):
+    for td in searchdata_soup.find_all('tr', {'class': 'state'}):
+
+        tds = td.find_all('td')
+        # tdm = tds.find_all('td')
+        try:
+
+            t2 = tds[2].text
+            t3 = tds[3].text
+            t4 = tds[4].text
+
+            if tds[4].text == "-":
+                t4 = '0'
+            if tds[3].text == "-":
+                t3 = '0'
+
+            t1 = int(t2) + int(t3) + int(t4)
+
+            print(tds[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+
+            state.covidstatedata_set.create(state=tds[0].text, total_cases=str(t1), total_recovered=t3,
+                                            total_deaths=t4, total_active=t2)
+
+            state.save()
+
+            # tdsdistrict = td.find_all('tr', {'class': 'district'})
+            # print(tdsdistrict[0].text)
+
+        except Exception as ee:
+
+            print(ee)
+
+
+def loaddisdata(request):
+    # search = request.POST.get('search')
+
+    chrome_options = Options()
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument('--no-sandbox')
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--window-size=1024x1400")
+    #driver = webdriver.Chrome(chrome_options=chrome_options,
+                              #executable_path="/Users/naveen/Desktop/codedd/myapplist/static/myapp/chromedriver")
+
+    driver = webdriver.Chrome(chrome_options=chrome_options, executable_path=os.environ.get('CHROMEDRIVER_PATH'))
+
+    driver.get("https://www.covid19india.org/")
+    # assert "GitHub".lower() in driver.title.lower()
+
+    # scrap info
+    searchdata_soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    CovidStateData.objects.all().delete()
+    CovidDisData.objects.all().delete()
     state = CovidData.objects.filter(country='india').order_by('-pk')[1]
     for td in searchdata_soup.find_all('tbody'):
 
@@ -422,13 +503,26 @@ def loadstatedata():
 
             t1 = int(t2) + int(t3) + int(t4)
 
-            # print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
+            print(tdm[0].text + ' -- ' + str(t1) + " " + t2 + ' ' + t3 + ' ' + t4 + ' ')
 
             state.covidstatedata_set.create(state=tdm[0].text, total_cases=str(t1), total_recovered=t3,
                                             total_deaths=t4, total_active=t2)
 
             state.save()
 
+            district = CovidStateData.objects.get(state=tdm[0].text)
+
+            tdsdistrict = td.find_all('tr', {'class': 'district'})
+            # print('hi')
+            for it in tdsdistrict:
+                tdk = it.find_all('td')
+                district.coviddisdata_set.create(district=tdk[0].text, total_cases=tdk[1].text)
+
+                district.save()
+
+                # print(tdk[0].text + "-" + tdk[1].text)
+
         except Exception as ee:
 
             print(ee)
+    return render(request, 'myapp/state_wise.html', {'search': 'hello', })

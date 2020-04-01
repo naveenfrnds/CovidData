@@ -38,3 +38,12 @@ class CovidStateData(models.Model):
 
     def __str__(self):
         return '{}  -  {}'.format(self.state, self.total_cases)
+
+
+class CovidDisData(models.Model):
+    covidstatedata = models.ForeignKey(CovidStateData, on_delete=models.CASCADE)
+    district = models.CharField(max_length=500)
+    total_cases = models.CharField(max_length=500)
+
+    def __str__(self):
+        return '{}  -  {}'.format(self.district, self.total_cases)
