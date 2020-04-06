@@ -80,12 +80,125 @@ body {
  <p></p>
  <p></p>
  <div class="container">
-     <P>WILL BE UPDATED SOON</P>
+     <P></P>
 </div>
 
 
 
+ {% if errormessage %}<div class = "container">
+     <div class="col s4">
+      <div class="center">
+          <i class="large material-icons" style="color: red">bug_report</i>
 
+      <h4>No Valid Data Found !! Check your Search</h4>
+    </div>
+    </div>
+
+{% else %}
+
+
+
+
+
+
+
+      <div class="container">
+     <div class="row">
+         <div >
+          <div class="col s2" align="right">
+
+
+    <i class="medium material-icons">insert_chart</i>
+          </div>
+              <div class="col s10">
+
+              <h5>INDIA COVID-19 STATE WISE TRACKER</h5>
+          </div>
+             </div>
+     </div>
+ </div>
+<div class = "container">
+
+    <div class="card blue-grey light">
+        <div class="card-content white-text">
+    <div class="row">
+
+
+        <div class="col s3">
+      <div align="center">
+          <i class="medium material-icons" style="color: Blue">group</i>
+          <p>Total Confirmed</p>
+          <h6>{{ headerdata.total_cases }}</h6>
+          <p></p>
+    </div>
+             </div>
+        <div class="col s3">
+      <div align="center">
+          <i class="medium material-icons" style="color: red">flash_on</i>
+          <p> Total Active</p>
+          <h6>{{ headerdata.total_active }}</h6>
+          <p></p>
+    </div>
+                  </div>
+
+        <div class="col s3">
+       <div align="center">
+          <i class="medium material-icons" style="color: Orange">face</i>
+          <p> Total Recovered</p>
+           <h6>{{ headerdata.total_recovered }}</h6>
+          <p></p>
+    </div>
+             </div>
+        <div class="col s3">
+       <div align="center">
+          <i class="medium material-icons" style="color: black">location_disabled</i>
+          <p> Total Deaths</p>
+           <h6>{{ headerdata.total_deaths }}</h6>
+          <p></p>
+    </div>
+                  </div>
+
+
+    </div>
+    </div>
+    </div>
+
+<div class="row">
+
+
+    <div class="col s12">
+      <table class="striped">
+   <tr style= "font-size: 12px;">
+       <th>STATE</th>
+       <th>CONFIRMED CASES</th>
+       <th>ACTIVE CASES</th>
+       <th>RECOVERED CASES</th>
+       <th>TOTAL DEATHS</th>
+   </tr>
+   {% for q in search %}
+       <tr style= "font-size: 12px;">
+           <!--<td ><a href='#' class="a-elem">{{q.state}}</a></td>-->
+           <td >{{q.state}}</td>
+           <td style=" text-align: center;">{{q.total_cases}}</td>
+            <td style=" text-align: center;">{{q.total_active}}</td>
+            <td style=" text-align: center;">{{q.total_recovered}}</td>
+            <td style=" text-align: center;">{{q.total_deaths}}</td>
+       </tr>
+   {% endfor %}
+</table>
+
+    </div>
+
+
+</div>
+
+</div>
+
+{% endif %}
+
+
+
+</div>
  <div id="overlay">
 
 </div>
