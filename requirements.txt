@@ -13,7 +13,7 @@ fake-useragent==0.1.11
 gunicorn==20.0.4
 idna==2.9
 lxml==4.5.0
-numpy==1.18.1
+numpy==1.22.0
 pandas==1.0.3
 parse==1.15.0
 pycparser==2.20
